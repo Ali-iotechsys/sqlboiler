@@ -23,12 +23,14 @@ func {{$alias.UpPlural}}WithSchema(schema string, mods ...qm.QueryMod) {{$alias.
     {{if and .AddSoftDeletes $canSoftDelete -}}
     mods = append(mods, qm.From("{{$schemaTable}}"), qmhelper.WhereIsNull("{{$schemaTable}}.{{or $.AutoColumns.Deleted "deleted_at" | $.Quotes}}"))
     {{else -}}
-    mods = append(mods, qm.From(fmt.Sprintf("%s.{{$tableName}}", schema)))
+    schemaTable := fmt.Sprintf("%s.{{$tableName}}", schema)
+    mods = append(mods, qm.From(schemaTable))
     {{end -}}
 
     q := NewQuery(mods...)
     if len(queries.GetSelect(q)) == 0 {
-        queries.SetSelect(q, []string{"{{$schemaTable}}.*"})
+        allSel := fmt.Sprintf("%s.*", schemaTable)
+        queries.SetSelect(q, []string{allSel})
     }
 
     return {{$alias.DownSingular}}Query{q}
