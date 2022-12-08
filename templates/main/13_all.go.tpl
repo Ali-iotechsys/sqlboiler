@@ -1,5 +1,6 @@
 {{- $alias := .Aliases.Table .Table.Name}}
 {{- $schemaTable := .Table.Name | .SchemaTable}}
+{{- $tableName := .Table.Name }}
 {{- $canSoftDelete := .Table.CanSoftDelete $.AutoColumns.Deleted }}
 // {{$alias.UpPlural}} retrieves all the records using an executor.
 func {{$alias.UpPlural}}(mods ...qm.QueryMod) {{$alias.DownSingular}}Query {
@@ -22,7 +23,7 @@ func {{$alias.UpPlural}}WithSchema(schema string, mods ...qm.QueryMod) {{$alias.
     {{if and .AddSoftDeletes $canSoftDelete -}}
     mods = append(mods, qm.From("{{$schemaTable}}"), qmhelper.WhereIsNull("{{$schemaTable}}.{{or $.AutoColumns.Deleted "deleted_at" | $.Quotes}}"))
     {{else -}}
-    mods = append(mods, qm.From("{{$schemaTable}}"))
+    mods = append(mods, qm.From("{{$tableName}}"))
     {{end -}}
 
     q := NewQuery(mods...)
