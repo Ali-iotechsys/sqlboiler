@@ -1,6 +1,6 @@
 module github.com/Ali-iotechsys/sqlboiler/v4
 
-go 1.19
+go 1.16
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
